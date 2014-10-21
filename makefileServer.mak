@@ -3,7 +3,7 @@ CFLAGS=-c -Wall -o3 -g
 LDFLAGS=
 SOURCES=main.c customFunctions.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=client
+EXECUTABLE=server
 
 
 all: $(SOURCES) $(EXECUTABLE)

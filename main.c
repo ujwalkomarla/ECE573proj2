@@ -2,6 +2,10 @@
 #include<limits.h> //HOST_NAME_MAX = 255, NAME_MAX = 255
 #include<stdlib.h>
 #include<string.h>
+#include"customFunctions.h"
+#include<sys/types.h>
+#include<sys/socket.h>
+
 int main(int argc, char **argv){
 	char *fileNameToTransfer = (char *)malloc(sizeof(char)* (NAME_MAX+1));
 	char **serverIP; //Array of Pointers from malloc
@@ -9,6 +13,9 @@ int main(int argc, char **argv){
 	unsigned int serverPortNumber; //Server Listening Port
 	unsigned int numberOfServers; //Number of Servers
 	unsigned int i;
+	unsigned int sockID;
+	FILE *fileToTransfer;
+	
 	if(argc<5){
 		if(1==argc){
 			printf(" FileNameToTransfer MSS #ServerPortNumber NumberOfServers ");
@@ -21,7 +28,7 @@ int main(int argc, char **argv){
 			}
 		}
 		else{
-			printf("USAGE: %s FileNameToTransfer MSS #ServerPortNumber ServerIPs\r\n",argv[0]);
+			printf("USAGE: %s FileNameToTransfer MSS #ServerPortNumber ServerIP(s)\r\n",argv[0]);
 			return -1;
 		}
 	}else{
@@ -36,5 +43,19 @@ int main(int argc, char **argv){
 			strcpy(serverIP[i-4],argv[i]);
 		}
 	}
+	fileToTransfer = fopen(fileNameToTransfer,"r");
+	if(NULL==fileToTransfer) DieWithError("Couldn't open the file to be transferred\r\n");
+	
+	sockID = connectUDPsock();
+	
+	
+	
+	
+	
+	
+	
+	
+	close()
+	
 	return 0;
 }
