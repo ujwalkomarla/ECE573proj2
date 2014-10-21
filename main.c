@@ -5,10 +5,13 @@
 #include"customFunctions.h"
 #include<sys/types.h>
 #include<sys/socket.h>
+#include<unistd.h> //close()
+#include<arpa/inet.h>//inet_addr()
 
 int main(int argc, char **argv){
 	char *fileNameToTransfer = (char *)malloc(sizeof(char)* (NAME_MAX+1));
-	char **serverIP; //Array of Pointers from malloc
+	char *tempStr = (char *)malloc(sizeof(char *));
+	unsigned int **serverIP; //Array of Pointers from malloc
 	unsigned int segmentSize; //MSS
 	unsigned int serverPortNumber; //Server Listening Port
 	unsigned int numberOfServers; //Number of Servers
@@ -20,11 +23,12 @@ int main(int argc, char **argv){
 		if(1==argc){
 			printf(" FileNameToTransfer MSS #ServerPortNumber NumberOfServers ");
 			scanf("%s %d %d %d", fileNameToTransfer, &segmentSize, &serverPortNumber, &numberOfServers);
-			serverIP = malloc(sizeof(char *) * numberOfServers);
+			serverIP = malloc(sizeof(unsigned int *) * numberOfServers);
 			for(i=0;i<numberOfServers;i++){
-				serverIP[i] = (char *)malloc(sizeof(char)* (HOST_NAME_MAX+1));
+				serverIP[i] = (unsigned int *)malloc(sizeof(unsigned int));
 				printf("\r\nServer-%d : ",i);
-				scanf("%s",serverIP[i]);
+				scanf("%s",tempStr);
+				*serverIP[i] = inet_addr(tempStr);
 			}
 		}
 		else{
@@ -37,16 +41,16 @@ int main(int argc, char **argv){
 		segmentSize = atoi(argv[2]);
 		serverPortNumber = atoi(argv[3]);
 		numberOfServers = argc-4;
-		serverIP = malloc(sizeof(char *) * numberOfServers);
+		serverIP = malloc(sizeof(unsigned int *) * numberOfServers);
 		for(i=4;i<argc;i++){
-			serverIP[i-4] = (char *)malloc(sizeof(char)* (HOST_NAME_MAX+1));
-			strcpy(serverIP[i-4],argv[i]);
+			serverIP[i-4] = (unsigned int *)malloc(sizeof(unsigned int));
+			*serverIP[i-4] = inet_addr(argv[i]);
 		}
 	}
 	fileToTransfer = fopen(fileNameToTransfer,"r");
 	if(NULL==fileToTransfer) DieWithError("Couldn't open the file to be transferred\r\n");
 	
-	sockID = connectUDPsock();
+	sockID = createUDPsock();
 	
 	
 	
@@ -55,7 +59,7 @@ int main(int argc, char **argv){
 	
 	
 	
-	close()
+	close(sockID);
 	
 	return 0;
 }
