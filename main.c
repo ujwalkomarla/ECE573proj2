@@ -7,7 +7,10 @@
 #include<sys/socket.h>
 #include<unistd.h> //close()
 #include<arpa/inet.h>//inet_addr()
+#define HEADERSIZE 8 //i.e., Seq. No. is 32-bit(4 byte) Checksum 16-bit(2) Packet Type Indicator 16-bit(1)
 
+#define SEGMENT_TYPE_DATA 1
+#define SEGMENT_TYPE_ACK 0
 int main(int argc, char **argv){
 	char *fileNameToTransfer = (char *)malloc(sizeof(char)* (NAME_MAX+1));
 	char *tempStr = (char *)malloc(sizeof(char *));
@@ -17,6 +20,10 @@ int main(int argc, char **argv){
 	unsigned int numberOfServers; //Number of Servers
 	unsigned int i;
 	unsigned int sockID;
+	char *buf;
+	unsigned int seqNo;
+	unsigned short int checkSumVal;
+	unsigned short int segmentType;
 	FILE *fileToTransfer;
 	
 	if(argc<5){
@@ -47,10 +54,24 @@ int main(int argc, char **argv){
 			*serverIP[i-4] = inet_addr(argv[i]);
 		}
 	}
+	sockID = createUDPsock();
+	buf = (char *) malloc(segmentSize*sizeof(char));
 	fileToTransfer = fopen(fileNameToTransfer,"r");
 	if(NULL==fileToTransfer) DieWithError("Couldn't open the file to be transferred\r\n");
+	seqNo = 0;
+	MaxNoOfDataBytesInSegment = segmentSize*sizeof(char) - HEADERSIZE;
+	while((fileReadSize = fread((buf + HEADERSIZE), sizeof(char), MaxNoOfDataBytesInSegment, fileToTransfer))>0){
+		
+		makeSegment(seqNo, SEGMENT_TYPE_DATA, buf, fileReadSize);
+		
+		
+		
+		seqNo += segmentSize;
+	}
 	
-	sockID = createUDPsock();
+	
+	
+	
 	
 	
 	
