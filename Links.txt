@@ -1,0 +1,18 @@
+http://stackoverflow.com/questions/10444664/eclipse-cdt-multithreaded-debugging-not-optimal-how-does-one-run-threads-exclu
+http://cboard.cprogramming.com/c-programming/111323-timers-software-interrupts.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interrupts
+Variable Arguments and sendSegment with static variables
