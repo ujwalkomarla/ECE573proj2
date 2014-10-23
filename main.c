@@ -22,8 +22,9 @@ int main(int argc, char **argv){
 	unsigned int sockID;
 	char *buf;
 	unsigned int seqNo;
-	unsigned short int checkSumVal;
-	unsigned short int segmentType;
+	
+	unsigned int MaxNoOfDataBytesInSegment;
+	int fileReadSize;
 	FILE *fileToTransfer;
 	
 	if(argc<5){
@@ -63,8 +64,7 @@ int main(int argc, char **argv){
 	while((fileReadSize = fread((buf + HEADERSIZE), sizeof(char), MaxNoOfDataBytesInSegment, fileToTransfer))>0){
 		
 		makeSegment(seqNo, SEGMENT_TYPE_DATA, buf, fileReadSize);
-		
-		
+		sendSegment(serverIP,serverPortNumber,numberOfServers,buf,segmentSize);
 		
 		seqNo += segmentSize;
 	}

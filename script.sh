@@ -1,2 +1,2 @@
-make -f makefileClient
-make -f makefileServer
+make -f makefileClient.mak
+make -f makefileServer.mak
