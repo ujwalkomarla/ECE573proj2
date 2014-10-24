@@ -1,7 +1,8 @@
 #include"customDefinitions.h"
 
 void timeOut(int sig){
-
+	sendSegment(RESEND);
+	signal(sig, SIG_IGN);
 }
 void DieWithError(char *msg){
 	perror(msg);
@@ -62,12 +63,29 @@ unsigned short int segmentChecksum(unsigned int seqNo, unsigned short int segmen
 	}
 	return ((unsigned short int)~sum); //1's complement	
 }
-
-unsigned int sendSegment(struct tServerInfo *serversInfo, char *buf, unsigned int segmentSize){
+//RESEND = 0
+//SEND = 3
+//unsigned int sendSegment(struct tServerInfo *serversInfo, char *buf, unsigned int segmentSize){
+unsigned int sendSegment(unsigned int reSendOrSend, ...){
+	
+	
+	static char *tBuf;
+	static unsigned int segmentSize;
+	static struct tServerInfo *serversInfo;
+	
+	if(reSendOrSend){
+	va_list arguments;
+	va_start(arguments, reSendOrSend);
+	struct tServerInfo *serversInfo = va_arg ( arguments, (struct tServerInfo *) );
+	tBuf = va_arg ( arguments, (char *) ); 
+	segmentSize = va_arg ( arguments, (unsigned int) );
+	va_end(arguments);
+	}
+		
 	int i;
 	struct itimerval new;
-	for(i=0; i<(serversInfo->numberOfServers); i++){
-	sendto(serversInfo->sockID,buf,segmentSize,0,(struct sockaddr *)serversInfo->ClientServerSockAddrInfo[i],sizeof(struct sockaddr_in));
+	for(i=0; i<numberOfServers; i++){
+	sendto(serversInfo->sockID,tBuf,segmentSize,0,(struct sockaddr *)serversInfo->ClientServerSockAddrInfo[i],sizeof(struct sockaddr_in));
 	}
 	new.it_interval.tv_sec = 0;
 	new.it_interval.tv_usec = 0;

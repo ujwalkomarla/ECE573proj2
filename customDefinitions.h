@@ -29,8 +29,8 @@
 #define ESTIMATED_RTT_S 0
 #define ESTIMATED_RTT_uS 5000
 
-#define SEND 0
-#define RESEND 1
+#define SEND 3
+#define RESEND 0
 struct tFileTransferInfo{
 	char *fileNameToTransfer;
 	unsigned int segmentSize;
@@ -52,4 +52,6 @@ int createUDPsock(void);
 void makeSegment(unsigned int, unsigned short int, char *, unsigned int);
 unsigned short int segmentChecksum(unsigned int, unsigned short int, unsigned short int *, unsigned int);
 //unsigned int sendSegment(unsigned int **, unsigned int, unsigned int ,unsigned int, char *, unsigned int);
-unsigned int sendSegment(struct tServerInfo *,char *,unsigned int);
+//unsigned int sendSegment(struct tServerInfo *,char *,unsigned int);
+unsigned int sendSegment(unsigned int, ...);
+void timeOut(int);
