@@ -76,15 +76,15 @@ unsigned int sendSegment(unsigned int reSendOrSend, ...){
 	if(reSendOrSend){
 	va_list arguments;
 	va_start(arguments, reSendOrSend);
-	struct tServerInfo *serversInfo = va_arg ( arguments, (struct tServerInfo *) );
-	tBuf = va_arg ( arguments, (char *) ); 
-	segmentSize = va_arg ( arguments, (unsigned int) );
+	serversInfo = va_arg ( arguments, struct tServerInfo * );
+	tBuf = va_arg ( arguments, char * ); 
+	segmentSize = va_arg ( arguments, unsigned int );
 	va_end(arguments);
 	}
 		
 	int i;
 	struct itimerval new;
-	for(i=0; i<numberOfServers; i++){
+	for(i=0; i<serversInfo->numberOfServers; i++){
 	sendto(serversInfo->sockID,tBuf,segmentSize,0,(struct sockaddr *)serversInfo->ClientServerSockAddrInfo[i],sizeof(struct sockaddr_in));
 	}
 	new.it_interval.tv_sec = 0;
