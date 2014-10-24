@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -Wall -o3 -g
 LDFLAGS=
-SOURCES=main.c customFunctions.c
+SOURCES=server.c customFunctions.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=server
 

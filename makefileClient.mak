@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -Wall -g 
 LDFLAGS= -pthread
-SOURCES=main.c customDefinitions.c ClientSenderThreadFunc.c
+SOURCES=client.c customDefinitions.c ClientSenderThreadFunc.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=client
 
