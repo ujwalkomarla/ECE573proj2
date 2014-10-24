@@ -5,8 +5,7 @@
 #include<linux/time.h>
 #undef timespec
 
-struct itimerval old;
-struct itimerval new;
+
  
 void catch_alarm (int sig)
 {
@@ -19,25 +18,26 @@ void HandleCtrlC(int signum){
 	signal(signum, HandleCtrlC);
 }
 
- 
-int main(void)
-{
-  signal (SIGALRM, catch_alarm);
-  signal(SIGINT, HandleCtrlC);
+void setAlarm(void){
+  
+  struct itimerval new;
   new.it_interval.tv_sec = 1;
   new.it_interval.tv_usec = 500000;
   new.it_value.tv_sec = 1;
   new.it_value.tv_usec = 500000;
    
-  old.it_interval.tv_sec = 0;
-  old.it_interval.tv_usec = 0;
-  old.it_value.tv_sec = 0;
-  old.it_value.tv_usec = 0;
-   
-  if (setitimer (ITIMER_REAL, &new, &old) < 0)
+  if (setitimer (ITIMER_REAL, &new, NULL) < 0)
       printf("timer init failed\n");
   else
       printf("timer init succeeded\n");
-  while(1) {sleep(2);printf("Hi");}
+  return;
+}
+ 
+int main(void)
+{
+  signal (SIGALRM, catch_alarm);
+  signal(SIGINT, HandleCtrlC);
+  setAlarm();
+  while(1) sleep(2);
 return 0;
 }
