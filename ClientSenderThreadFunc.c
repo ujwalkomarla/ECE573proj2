@@ -15,7 +15,7 @@ void* ClientSenderThreadFunc(void *msg){
 	while((fileReadSize = fread((buf + HEADERSIZE), sizeof(char), MaxNoOfDataBytesInSegment, fileToTransfer))>0){
 		
 		makeSegment(seqNo, SEGMENT_TYPE_DATA, buf, fileReadSize);
-		sendSegment(rcvdArgument->serverInfo,buf,(fileReadSize+HEADERSIZE));
+		sendSegment(SEND, rcvdArgument->serverInfo,buf,(fileReadSize+HEADERSIZE));
 		
 		seqNo += segmentSize;
 	}
