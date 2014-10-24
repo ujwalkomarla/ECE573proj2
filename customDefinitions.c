@@ -8,14 +8,15 @@ void DieWithError(char *msg){
 	perror(msg);
 	exit(EXIT_FAILURE);
 }
-int createUDPsock(void){
+int createUDPsock(unsigned int tSocket){
+//if Input parameter is Zero, we let the OS to choose a port on behalf of us
 	int sockID;
 	if ((sockID = socket(AF_INET, SOCK_DGRAM, 0)) < 0) DieWithError("Unable to create a socket");
 	struct sockaddr_in myAddr;
 	memset((struct sockaddr_in *)&myAddr, 0 , sizeof(myAddr));
 	myAddr.sin_family = AF_INET;
 	myAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	myAddr.sin_port = htons(0);//Let the OS chose a port on behalf of us.
+	myAddr.sin_port = htons(tSocket);
 	if(bind(sockID,(struct sockaddr *)&myAddr, sizeof(myAddr))<0) DieWithError("Unable to do a bind on socket"); 
 	return sockID;
 }

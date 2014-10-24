@@ -60,7 +60,8 @@ int main(int argc, char **argv){
 			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_addr.s_addr = inet_addr(argv[i]);
 		}
 	}
-	clientSenderThreadArgument->serverInfo->sockID = createUDPsock();
+	//By sending 0 we are letting the OS to choose a port for us.
+	clientSenderThreadArgument->serverInfo->sockID = createUDPsock(0);
 	
 	
     if(0 != pthread_create( &clientSenderThread, NULL, ClientSenderThreadFunc, clientSenderThreadArgument)) DieWithError("Error - pthread_create()");	
