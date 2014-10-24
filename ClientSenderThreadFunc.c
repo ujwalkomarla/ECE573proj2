@@ -19,6 +19,7 @@ void* ClientSenderThreadFunc(void *msg){
 		
 		seqNo += segmentSize;
 	}
+	return NULL;
 }	
 	
 	
