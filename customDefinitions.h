@@ -27,6 +27,8 @@
 #define CHECKSUM_HEADER_POS 4
 #define SEGMENTTYPE_HEADER_POS 6
 
+#define ACK_SEG_SIZE 8
+
 #define ESTIMATED_RTT_S 0
 #define ESTIMATED_RTT_uS 5000
 
@@ -35,11 +37,13 @@
 struct tFileTransferInfo{
 	char *fileNameToTransfer;
 	unsigned int segmentSize;
+	unsigned int seqNo;
 };
 struct tServerInfo{
 	struct sockaddr_in **ClientServerSockAddrInfo;
 	unsigned int sockID;
 	unsigned int numberOfServers;
+	unsigned int *serverACK;
 };
 struct threadArgument{
 	struct tFileTransferInfo *fileTransferInfo;
@@ -48,6 +52,7 @@ struct threadArgument{
 	
 	
 void* ClientSenderThreadFunc(void *);	
+void* ClientReceiverThreadFunc(void *);
 void DieWithError(char *);
 int createUDPsock(unsigned int);
 void makeSegment(unsigned int, unsigned short int, char *, unsigned int);
