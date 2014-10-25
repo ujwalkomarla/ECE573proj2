@@ -1,5 +1,5 @@
 #include"customDefinitions.h"
-
+unsigned int SEND_NEXT = 1;
 int main(int argc, char **argv){
 	struct threadArgument *clientSenderThreadArgument = malloc(sizeof(struct threadArgument));
 	
@@ -10,7 +10,7 @@ int main(int argc, char **argv){
 	clientSenderThreadArgument->fileTransferInfo->fileNameToTransfer = (char *)malloc(sizeof(char)* (NAME_MAX+1));
 	
 	
-	//This information can directly be saved in a sockaddr_i struct variable info.(IP address and Server Listening Port)
+	//This information can directly be saved in a sockaddr_in struct variable info.(IP address and Server Listening Port)
 	//unsigned int **serverIP; //Array of Pointers from malloc
 	//unsigned int serverPortNumber; //Server Listening Port
 	//unsigned int numberOfServers; //Number of Servers
@@ -31,7 +31,9 @@ int main(int argc, char **argv){
 							&tServerPortNumber, \
 							&(clientSenderThreadArgument->serverInfo->numberOfServers));
 			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo = \
-				malloc(sizeof(struct sockaddr_i *) * clientSenderThreadArgument->serverInfo->numberOfServers);
+				malloc(sizeof(struct sockaddr_in *) * clientSenderThreadArgument->serverInfo->numberOfServers);
+			clientSenderThreadArgument->serverInfo->serverACK = \
+				malloc(sizeof(unsigned int) * clientSenderThreadArgument->serverInfo->numberOfServers);	
 			for(i=0;i<(clientSenderThreadArgument->serverInfo->numberOfServers);i++){
 				printf("\r\nServer-%d : ",i);
 				scanf("%s",tempStr);
@@ -52,7 +54,10 @@ int main(int argc, char **argv){
 		clientSenderThreadArgument->fileTransferInfo->segmentSize = atoi(argv[2]);
 		clientSenderThreadArgument->serverInfo->numberOfServers = argc-4;
 		clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo = \
-				malloc(sizeof(struct sockaddr_i *) * clientSenderThreadArgument->serverInfo->numberOfServers);
+				malloc(sizeof(struct sockaddr_in *) * clientSenderThreadArgument->serverInfo->numberOfServers);
+		clientSenderThreadArgument->serverInfo->serverACK = \
+				malloc(sizeof(unsigned int) * clientSenderThreadArgument->serverInfo->numberOfServers);		
+				
 		for(i=4;i<argc;i++){
 			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4] = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
 			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_family = AF_INET;
@@ -66,7 +71,7 @@ int main(int argc, char **argv){
 	
     if(0 != pthread_create( &clientSenderThread, NULL, ClientSenderThreadFunc, clientSenderThreadArgument)) DieWithError("Error - pthread_create()");	
 	// What parameters are required to be sent?
-    if(0 !=pthread_create( &clientReceiverThread, NULL, ClientReceiverThreadFunc, NULL)) DieWithError("Error - pthread_create()");
+    if(0 !=pthread_create( &clientReceiverThread, NULL, ClientReceiverThreadFunc, clientSenderThreadArgument)) DieWithError("Error - pthread_create()");
 	pthread_join( clientSenderThread, NULL);
 	pthread_join( clientReceiverThread, NULL);
 	close(clientSenderThreadArgument->serverInfo->sockID);
