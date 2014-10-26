@@ -1,4 +1,4 @@
-
+#include"customDefinitions.h"
 int main(int argc, char **argv){
 
 	if(argc!=4){
@@ -11,12 +11,30 @@ int main(int argc, char **argv){
 	float lossProb = atof(argv[3]);
 	unsigned int sockID = createUDPsock(serverPortNumber);
 	char *buf = (char *)malloc(sizeof(char)*PROJ_MAX_SEGMENT_SIZE);
-	struct sockaddr_in = 
+	char *replyBuf = (char *)malloc(sizeof(char)*ACK_SEG_SIZE);
+	struct sockaddr_in senderConn;
+	unsigned int sizeSenderConn = sizeof(struct sockaddr_in);
+	FILE *fp = fopen(fileNameToTransfer,"w");
+	unsigned short int checkSumValue;
+	unsigned short int segType;
+	unsigned int seqNo = 0;
+	unsigned int tSeqNo;
+	int noOfBytesRead;
 	while(1){
-		if(recvfrom(sockID,buf,sizeof(buf),0,(struct sockaddr *)&serverUDP,&serverUDPlen)<0) DieWithError("Server can't receive packets");
-		if((rand()/RAND_MAC)>lossProb){
-			if(){
-			
+		if((noOfBytesRead = recvfrom(sockID,buf,sizeof(buf),0,(struct sockaddr *)&senderConn,&sizeSenderConn))<0) DieWithError("Server can't receive packets");
+		if((rand()/RAND_MAX)>lossProb){
+			checkSumValue  = segmentChecksum(0,0,buf,noOfBytesRead) + 1;
+			if(!checkSumValue){//i.e., Only if checksum + 1 is equal to zero, then accept 
+				tSeqNo = (((buf[SEQ_NO_HEADER_POS] << 24) &0xFF000000)|(( buf[SEQ_NO_HEADER_POS+1] << 16) & 0x00FF0000) | ((buf[SEQ_NO_HEADER_POS+2] << 8) &0x0000FF00)|( buf[SEQ_NO_HEADER_POS+3] & 0x000000FF) );
+				if(tSeqNo == seqNo){
+					segType = (((buf[SEGMENTTYPE_HEADER_POS]<<8)&0xFF00)|(buf[SEGMENTTYPE_HEADER_POS+1]&0x00FF));
+					if(0x5555 == segType){
+					fwrite(buf,noOfBytesRead,sizeof(char),fp);
+					makeSegment(tSeqNo,SEGMENT_TYPE_ACK,replyBuf,0);
+					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
+					seqNo += noOfBytesRead;
+					}
+				}
 			}
 		}
 	}
