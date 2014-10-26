@@ -1,6 +1,8 @@
 http://stackoverflow.com/questions/10444664/eclipse-cdt-multithreaded-debugging-not-optimal-how-does-one-run-threads-exclu
 http://cboard.cprogramming.com/c-programming/111323-timers-software-interrupts.html
-
+https://sourceware.org/gdb/onlinedocs/gdb/Threads.html
+https://www.scribd.com/doc/3009706/Debugging-Linux-Applications
+https://www.youtube.com/watch?v=XR4-5OAujLM
 
 
 
