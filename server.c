@@ -23,13 +23,21 @@ int main(int argc, char **argv){
 	int noOfBytesRead;
 	while(1){
 		if((noOfBytesRead = recvfrom(sockID,buf,sizeof(buf),0,(struct sockaddr *)&senderConn,&sizeSenderConn))<0) DieWithError("Server can't receive packets");
-		#ifdef DEBUG
-			printf("Received a packet\r\n");
-		#endif
+		//#ifdef DEBUG
+		//	printf("Received a packet\r\n");
+		//	fflush(stdout);
+		//#endif 
 		tSeqNo = (((buf[SEQ_NO_HEADER_POS] << 24) &0xFF000000)|(( buf[SEQ_NO_HEADER_POS+1] << 16) & 0x00FF0000) | ((buf[SEQ_NO_HEADER_POS+2] << 8) &0x0000FF00)|( buf[SEQ_NO_HEADER_POS+3] & 0x000000FF) );
-
-		if((rand()/RAND_MAX)>lossProb){
+		float tempVal = rand()/(float)RAND_MAX;
+		#ifdef DEBUG
+			//printf("%f Rand value", tempVal);
+			printf("%d No of bytes",noOfBytesRead);
+		#endif
+		if(tempVal>lossProb){
 			checkSumValue  = segmentChecksum(0,0,buf,noOfBytesRead) + 1;
+			#ifdef DEBUG
+				printf("%d checkSumValue", checkSumValue);
+			#endif
 			if(!checkSumValue){//i.e., Only if checksum + 1 is equal to zero, then accept 
 				if(tSeqNo == seqNo){
 					segType = (((buf[SEGMENTTYPE_HEADER_POS]<<8)&0xFF00)|(buf[SEGMENTTYPE_HEADER_POS+1]&0x00FF));
