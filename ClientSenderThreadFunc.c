@@ -15,7 +15,9 @@ void* ClientSenderThreadFunc(void *msg){
 	int fileReadSize;
 	while((fileReadSize = fread((buf + HEADERSIZE), sizeof(char), MaxNoOfDataBytesInSegment, fileToTransfer))>0){
 		while(!SEND_NEXT);
-		
+		#ifdef DEBUG
+		printf("Sending a packet with sequence number %d",seqNo);
+		#endif
 		//This instruction is required first, so that the older ACK's are not accepted
 		(rcvdArgument->fileTransferInfo->seqNo) += segmentSize;
 		for(i = 0;i<rcvdArgument->serverInfo->numberOfServers;i++){

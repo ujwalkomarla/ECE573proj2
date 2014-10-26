@@ -1,5 +1,5 @@
 #include"customDefinitions.h"
-#define DEBUG
+
 int main(int argc, char **argv){
 
 	if(argc!=4){
@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 						printf("Unknown packet type\r\n");
 					}
 				}else{
-					printf("Older Packet, Waiting for Sequence Number = %d, Received Sequence Number = %d\r\n",seqNo,tSeqNo);
+					printf("Random Packet, Waiting for Sequence Number = %d, Received Sequence Number = %d\r\n",seqNo,tSeqNo);
 					makeSegment(seqNo,SEGMENT_TYPE_ACK,replyBuf,0);//ACK last received packet.
 					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
 					

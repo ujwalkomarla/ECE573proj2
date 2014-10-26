@@ -1,3 +1,4 @@
+#define DEBUG
 #include<stdio.h>
 #include<stdarg.h>
 #include<limits.h> //HOST_NAME_MAX = 255, NAME_MAX = 255
