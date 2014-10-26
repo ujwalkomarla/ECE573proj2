@@ -1,4 +1,5 @@
 #include"customDefinitions.h"
+#define DEBUG
 int main(int argc, char **argv){
 
 	if(argc!=4){
@@ -22,10 +23,14 @@ int main(int argc, char **argv){
 	int noOfBytesRead;
 	while(1){
 		if((noOfBytesRead = recvfrom(sockID,buf,sizeof(buf),0,(struct sockaddr *)&senderConn,&sizeSenderConn))<0) DieWithError("Server can't receive packets");
+		#ifdef DEBUG
+			printf("Received a packet\r\n");
+		#endif
+		tSeqNo = (((buf[SEQ_NO_HEADER_POS] << 24) &0xFF000000)|(( buf[SEQ_NO_HEADER_POS+1] << 16) & 0x00FF0000) | ((buf[SEQ_NO_HEADER_POS+2] << 8) &0x0000FF00)|( buf[SEQ_NO_HEADER_POS+3] & 0x000000FF) );
+
 		if((rand()/RAND_MAX)>lossProb){
 			checkSumValue  = segmentChecksum(0,0,buf,noOfBytesRead) + 1;
 			if(!checkSumValue){//i.e., Only if checksum + 1 is equal to zero, then accept 
-				tSeqNo = (((buf[SEQ_NO_HEADER_POS] << 24) &0xFF000000)|(( buf[SEQ_NO_HEADER_POS+1] << 16) & 0x00FF0000) | ((buf[SEQ_NO_HEADER_POS+2] << 8) &0x0000FF00)|( buf[SEQ_NO_HEADER_POS+3] & 0x000000FF) );
 				if(tSeqNo == seqNo){
 					segType = (((buf[SEGMENTTYPE_HEADER_POS]<<8)&0xFF00)|(buf[SEGMENTTYPE_HEADER_POS+1]&0x00FF));
 					if(0x5555 == segType){
@@ -34,9 +39,17 @@ int main(int argc, char **argv){
 					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
 					seqNo += noOfBytesRead;
 					
+					}else{
+						printf("Unknown packet type\r\n");
 					}
+				}else{
+					printf("Older Packet, Waiting for Sequence Number = %d, Received Sequence Number = %d\r\n",seqNo,tSeqNo);
 				}
+			}else{
+				printf("Checksum fail, Sequence Number = %d\r\n",tSeqNo);
 			}
+		}else{
+			printf("Packet Loss, Sequence Number = %d\r\n", tSeqNo);
 		}
 	}
 	
