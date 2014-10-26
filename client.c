@@ -7,6 +7,9 @@ int main(int argc, char **argv){
 	//Variable to struct member
 	//char *fileNameToTransfer = (char *)malloc(sizeof(char)* (NAME_MAX+1));
 	//unsigned int segmentSize; //MSS : Scanf/Argv[?]
+	clientSenderThreadArgument->fileTransferInfo = malloc(sizeof(struct tFileTransferInfo));
+	clientSenderThreadArgument->serverInfo = malloc(sizeof(struct tServerInfo));
+	
 	clientSenderThreadArgument->fileTransferInfo->fileNameToTransfer = (char *)malloc(sizeof(char)* (NAME_MAX+1));
 	
 	
