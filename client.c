@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 				
 				clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i] = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
 				clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i]->sin_family = AF_INET;
-				clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i]->sin_port = tServerPortNumber;
+				clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i]->sin_port = htons(tServerPortNumber);
 				clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i]->sin_addr.s_addr = inet_addr(tempStr);
 			}
 		}
@@ -52,7 +52,7 @@ int main(int argc, char **argv){
 			return -1;
 		}
 	}else{
-		
+				
 		strcpy(clientSenderThreadArgument->fileTransferInfo->fileNameToTransfer,argv[1]);
 		clientSenderThreadArgument->fileTransferInfo->segmentSize = atoi(argv[2]);
 		clientSenderThreadArgument->serverInfo->numberOfServers = argc-4;
@@ -64,13 +64,13 @@ int main(int argc, char **argv){
 		for(i=4;i<argc;i++){
 			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4] = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
 			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_family = AF_INET;
-			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_port = atoi(argv[3]);
+			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_port = htons(atoi(argv[3]));
 			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_addr.s_addr = inet_addr(argv[i]);
+		
 		}
 	}
 	//By sending 0 we are letting the OS to choose a port for us.
 	clientSenderThreadArgument->serverInfo->sockID = createUDPsock(0);
-	
 	
     if(0 != pthread_create( &clientSenderThread, NULL, ClientSenderThreadFunc, clientSenderThreadArgument)) DieWithError("Error - pthread_create()");	
 	// What parameters are required to be sent?
