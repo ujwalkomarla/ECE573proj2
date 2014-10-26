@@ -1,8 +1,13 @@
 #include"customDefinitions.h"
 
 void timeOut(int sig){
-	sendSegment(RESEND);
 	signal(sig, SIG_IGN);
+	sendSegment(RESEND);
+	#ifdef DEBUG
+		printf("Time out");
+		fflush(stdout);
+	#endif
+	
 }
 void DieWithError(char *msg){
 	perror(msg);
@@ -39,7 +44,11 @@ void makeSegment(unsigned int seqNo, unsigned short int segmentType, char *buf, 
 	if(0 != dataLength)
 		//Disregard warning of char * to unsigned short in *
 		checkSumVal = segmentChecksum(seqNo, segmentType, buf + HEADERSIZE, dataLength);
-	
+		checkSumVal = ~checkSumVal;
+	#ifdef DEBUG
+		printf("%d",checkSumVal);
+		printf(" %d",dataLength);
+	#endif
 	buf[CHECKSUM_HEADER_POS] = (checkSumVal>>8) & 0xFF;
 	buf[CHECKSUM_HEADER_POS+1] = checkSumVal & 0xFF; 
 
@@ -50,19 +59,20 @@ void makeSegment(unsigned int seqNo, unsigned short int segmentType, char *buf, 
 
 
 
-unsigned short int segmentChecksum(unsigned int seqNo, unsigned short int segmentType, unsigned short int *buf, unsigned int dataLength){
+unsigned short int segmentChecksum(unsigned int seqNo, unsigned short int segmentType, char *buf, unsigned int dataLength){
 	unsigned int sum=0;
 	unsigned int i;
 	if(1==dataLength%2) {dataLength++; buf[dataLength] = 0;}//Padding
 	sum += ((seqNo>>16)&0xFFFF) + (seqNo&0XFFFF);
 	sum += segmentType;
-	for(i=0;i<dataLength/2;i++){//Accessed as short int, so dataLength needs to be divided by two
+	for(i=0;i<dataLength;i++){
+		
 		sum += buf[i];
 	}
 	while(sum>>16){
 		sum = ((sum>>16)&0xFFFF) + (sum&0xFFFF);
 	}
-	return ((unsigned short int)~sum); //1's complement	
+	return ((unsigned short int)sum); //1's complement	
 }
 //RESEND = 0
 //SEND = 3
@@ -90,7 +100,7 @@ unsigned int sendSegment(unsigned int reSendOrSend, ...){
 	}
 	new.it_interval.tv_sec = 0;
 	new.it_interval.tv_usec = 0;
-	new.it_value.tv_sec = 0;
+	new.it_value.tv_sec = ESTIMATED_RTT_S;
 	new.it_value.tv_usec = ESTIMATED_RTT_uS;
 	if (setitimer (ITIMER_REAL, &new, NULL) < 0) DieWithError("Couldn't create the timer");
 	signal (SIGALRM, timeOut);

@@ -30,8 +30,8 @@
 #define PROJ_MAX_SEGMENT_SIZE 1000
 #define ACK_SEG_SIZE 8
 
-#define ESTIMATED_RTT_S 0
-#define ESTIMATED_RTT_uS 5000
+#define ESTIMATED_RTT_S 1
+#define ESTIMATED_RTT_uS 0
 
 #define SEND 3
 #define RESEND 0
@@ -57,7 +57,7 @@ void* ClientReceiverThreadFunc(void *);
 void DieWithError(char *);
 int createUDPsock(unsigned int);
 void makeSegment(unsigned int, unsigned short int, char *, unsigned int);
-unsigned short int segmentChecksum(unsigned int, unsigned short int, unsigned short int *, unsigned int);
+unsigned short int segmentChecksum(unsigned int, unsigned short int, char *, unsigned int);
 //unsigned int sendSegment(unsigned int **, unsigned int, unsigned int ,unsigned int, char *, unsigned int);
 //unsigned int sendSegment(struct tServerInfo *,char *,unsigned int);
 unsigned int sendSegment(unsigned int, ...);
