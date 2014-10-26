@@ -33,6 +33,7 @@ int main(int argc, char **argv){
 					makeSegment(tSeqNo,SEGMENT_TYPE_ACK,replyBuf,0);
 					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
 					seqNo += noOfBytesRead;
+					
 					}
 				}
 			}
