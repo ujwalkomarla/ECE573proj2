@@ -17,6 +17,7 @@ void* ClientSenderThreadFunc(void *msg){
 		while(!SEND_NEXT);
 		#ifdef DEBUG
 		printf("Sending a packet with sequence number %d",rcvdArgument->fileTransferInfo->seqNo);
+		fflush(stdout);
 		#endif
 		//This instruction is required first, so that the older ACK's are not accepted
 		(rcvdArgument->fileTransferInfo->seqNo) += segmentSize;
