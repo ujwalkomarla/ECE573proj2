@@ -1,4 +1,15 @@
+//#includes
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include<limits.h>  //NAME_MAX
+#include<unistd.h>
+#include<errno.h>
 
+//#defines
 #define PROJ_MAX_SEGMENT_SIZE 549;
 #define SERVERLISTENPORT 65423;
 
