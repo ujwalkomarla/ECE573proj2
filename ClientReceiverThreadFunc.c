@@ -39,7 +39,7 @@ void *ClientReceiverThreadFunc(void *msg){
 						printf("Unknown packet type\r\n");
 					}
 				}else{
-					printf("ACK for older packet, Waiting for %d, Received %d",rcvdArgument->fileTransferInfo->seqNo,seqNo)
+					printf("ACK for older packet, Waiting for %d, Received %d",rcvdArgument->fileTransferInfo->seqNo,seqNo);
 				}
 			}	
 		/*}*/
