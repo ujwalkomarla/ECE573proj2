@@ -36,7 +36,7 @@ int main(int argc, char **argv){
 		if(tempVal>lossProb){
 			checkSumValue  = segmentChecksum(0,0,buf,noOfBytesRead) + 1;
 			#ifdef DEBUG
-				printf("checkSumValue = %d", checkSumValue);
+				//printf("checkSumValue = %d", checkSumValue);
 				//fwrite(buf,sizeof(char),noOfBytesRead,stdout);
 				//fflush(stdout);
 			#endif
@@ -44,11 +44,14 @@ int main(int argc, char **argv){
 				if(tSeqNo == seqNo){
 					segType = (((buf[SEGMENTTYPE_HEADER_POS]<<8)&0xFF00)|(buf[SEGMENTTYPE_HEADER_POS+1]&0x00FF));
 					if(0x5555 == segType){
-					fwrite(buf+HEADERSIZE,noOfBytesRead,sizeof(char),fp);
+					fwrite(buf+HEADERSIZE,sizeof(char),noOfBytesRead-HEADERSIZE,fp);
+					fflush(fp);
 					makeSegment(tSeqNo,SEGMENT_TYPE_ACK,replyBuf,0);
 					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
 					seqNo += noOfBytesRead;
-					
+					#ifdef DEBUG
+					printf("Accepted packet with seq no %d \r\n",tSeqNo);
+					#endif
 					}else{
 						printf("Unknown packet type\r\n");
 					}
