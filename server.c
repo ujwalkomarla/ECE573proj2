@@ -22,7 +22,7 @@ int main(int argc, char **argv){
 	unsigned int tSeqNo;
 	int noOfBytesRead;
 	while(1){
-		if((noOfBytesRead = recvfrom(sockID,buf,sizeof(buf),0,(struct sockaddr *)&senderConn,&sizeSenderConn))<0) DieWithError("Server can't receive packets");
+		if((noOfBytesRead = recvfrom(sockID,buf,sizeof(char)*PROJ_MAX_SEGMENT_SIZE,0,(struct sockaddr *)&senderConn,&sizeSenderConn))<0) DieWithError("Server can't receive packets");
 		//#ifdef DEBUG
 		//	printf("Received a packet\r\n");
 		//	fflush(stdout);
@@ -31,12 +31,14 @@ int main(int argc, char **argv){
 		float tempVal = rand()/(float)RAND_MAX;
 		#ifdef DEBUG
 			//printf("%f Rand value", tempVal);
-			printf("%d No of bytes",noOfBytesRead);
+			//printf("No of bytes = %d",noOfBytesRead);
 		#endif
 		if(tempVal>lossProb){
 			checkSumValue  = segmentChecksum(0,0,buf,noOfBytesRead) + 1;
 			#ifdef DEBUG
-				printf("%d checkSumValue", checkSumValue);
+				printf("checkSumValue = %d", checkSumValue);
+				//fwrite(buf,sizeof(char),noOfBytesRead,stdout);
+				//fflush(stdout);
 			#endif
 			if(!checkSumValue){//i.e., Only if checksum + 1 is equal to zero, then accept 
 				if(tSeqNo == seqNo){
