@@ -13,7 +13,7 @@ void *ClientReceiverThreadFunc(void *msg){
 	unsigned int countOfACKs;
 	int noOfBytesRead;
 	while(1){
-		if((noOfBytesRead = recvfrom(rcvdArgument->serverInfo->sockID,buf,sizeof(buf),0,(struct sockaddr *)&clientRcvrUDP,&clientRcvrUDPlen))<0) DieWithError("Client Receiver can't receive packets");
+		if((noOfBytesRead = recvfrom(rcvdArgument->serverInfo->sockID,buf,ACK_SEG_SIZE*sizeof(char),0,(struct sockaddr *)&clientRcvrUDP,&clientRcvrUDPlen))<0) DieWithError("Client Receiver can't receive packets");
 		#ifdef DEBUG
 		printf("Received an ACK probably?");
 		#endif
