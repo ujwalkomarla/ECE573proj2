@@ -44,7 +44,7 @@ int main(int argc, char **argv){
 				if(tSeqNo == seqNo){
 					segType = (((buf[SEGMENTTYPE_HEADER_POS]<<8)&0xFF00)|(buf[SEGMENTTYPE_HEADER_POS+1]&0x00FF));
 					if(0x5555 == segType){
-					fwrite(buf,noOfBytesRead,sizeof(char),fp);
+					fwrite(buf+HEADERSIZE,noOfBytesRead,sizeof(char),fp);
 					makeSegment(tSeqNo,SEGMENT_TYPE_ACK,replyBuf,0);
 					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
 					seqNo += noOfBytesRead;
