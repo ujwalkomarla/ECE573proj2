@@ -4,8 +4,8 @@ void timeOut(int sig){
 	signal(sig, SIG_IGN);
 	sendSegment(RESEND);
 	#ifdef DEBUG
-		printf("Time out");
-		fflush(stdout);
+		//printf("Time out");
+		//fflush(stdout);
 	#endif
 	
 }
@@ -30,6 +30,7 @@ int createUDPsock(unsigned int tSocket){
 
 void makeSegment(unsigned int seqNo, unsigned short int segmentType, char *buf, unsigned int dataLength){
 	unsigned short int checkSumVal;
+	
 	buf[SEQ_NO_HEADER_POS] = (seqNo>>24) & 0xFF;
 	buf[SEQ_NO_HEADER_POS+1] = (seqNo>>16) & 0xFF;
 	buf[SEQ_NO_HEADER_POS+2] = (seqNo>>8) & 0xFF;
@@ -41,17 +42,26 @@ void makeSegment(unsigned int seqNo, unsigned short int segmentType, char *buf, 
 		 
 	buf[SEGMENTTYPE_HEADER_POS] = (segmentType>>8) & 0xFF;
 	buf[SEGMENTTYPE_HEADER_POS+1] = segmentType & 0xFF;
+	
 	if(0 != dataLength)
 		//Disregard warning of char * to unsigned short in *
 		checkSumVal = segmentChecksum(seqNo, segmentType, buf + HEADERSIZE, dataLength);
+	#ifdef DEBUG
+		//printf("CheckSumVal = %d",checkSumVal);
+	#endif
 		checkSumVal = ~checkSumVal;
 	#ifdef DEBUG
-		printf("%d",checkSumVal);
-		printf(" %d",dataLength);
+		//printf("CheckSumVal = %d",checkSumVal);
 	#endif
-	buf[CHECKSUM_HEADER_POS] = (checkSumVal>>8) & 0xFF;
+	buf[CHECKSUM_HEADER_POS] =  (checkSumVal>>8) & 0xFF;
 	buf[CHECKSUM_HEADER_POS+1] = checkSumVal & 0xFF; 
-
+	
+	#ifdef DEBUG
+		//unsigned short int throw = segmentChecksum(0, 0, buf, dataLength+HEADERSIZE) + 1;
+		//printf("Throw = %d",throw);
+		//fflush(stdout);
+	#endif
+	
 	return;
 }
 
@@ -65,12 +75,12 @@ unsigned short int segmentChecksum(unsigned int seqNo, unsigned short int segmen
 	if(1==dataLength%2) {dataLength++; buf[dataLength] = 0;}//Padding
 	sum += ((seqNo>>16)&0xFFFF) + (seqNo&0XFFFF);
 	sum += segmentType;
-	for(i=0;i<dataLength;i++){
+	for(i=0;i<(dataLength);i+=2){
 		
-		sum += buf[i];
+		sum += ((buf[i]<<8)&0xFF00) + (buf[i+1]&0x00FF);
 	}
 	while(sum>>16){
-		sum = ((sum>>16)&0xFFFF) + (sum&0xFFFF);
+		sum = (sum>>16) + (sum&0xFFFF);
 	}
 	return ((unsigned short int)sum); //1's complement	
 }
@@ -91,6 +101,11 @@ unsigned int sendSegment(unsigned int reSendOrSend, ...){
 	tBuf = va_arg ( arguments, char * ); 
 	segmentSize = va_arg ( arguments, unsigned int );
 	va_end(arguments);
+	#ifdef DEBUG
+	//printf("Segment Size %d Buffer = ",segmentSize);
+	//fwrite(tBuf,sizeof(char),segmentSize,stdout);
+	//fflush(stdout);
+	#endif
 	}
 		
 	int i;
