@@ -1,6 +1,10 @@
 #!/bin/bash
-make -f makefileClient.c
+Server0=174.97.168.75
+Server1=
+Server2=
+
 sleep 1
+
 #Open port numbers 61001-61005,62001-62010,63001-63010 on servers
 #Client will be at Lab, $Server0 is my IP(174.97.168.75), $Server1 is Shruti's IP(), $Server2 is system at Lab().
 
@@ -32,9 +36,7 @@ dd if=/dev/urandom of=Task3_08.txt bs=1M count=5
 dd if=/dev/urandom of=Task3_09.txt bs=1M count=5
 dd if=/dev/urandom of=Task3_10.txt bs=1M count=5
 
-Server0=174.97.168.75
-Server1=
-Server2=
+
 gnome-terminal -t cTask1_1 -e "bash -c \"time ./p2mpclient $Server0 61001 Task1_1.txt 500; echo cTask1_1; exec bash\""
 gnome-terminal -t cTask1_2 -e "bash -c \"time ./p2mpclient $Server0 $Server1 61002 Task1_2.txt 500; echo cTask1_2; exec bash\""
 gnome-terminal -t cTask1_3 -e "bash -c \"time ./p2mpclient $Server0 $Server1 $Server2 61003 Task1_3.txt 500; echo cTask1_3; exec bash\""

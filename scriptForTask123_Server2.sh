@@ -1,7 +1,7 @@
 #!/bin/bash
 sleep 1
-gnome-terminal -t s0Task1_1 -e "time ./p2mpserver 61001 outTask1_1.txt 0.05"
-gnome-terminal -t s0Task1_2 -e "time ./p2mpserver 61002 outTask1_2.txt 0.05"
+#gnome-terminal -t s0Task1_1 -e "time ./p2mpserver 61001 outTask1_1.txt 0.05"
+#gnome-terminal -t s0Task1_2 -e "time ./p2mpserver 61002 outTask1_2.txt 0.05"
 gnome-terminal -t s0Task1_3 -e "time ./p2mpserver 61003 outTask1_3.txt 0.05"
 #gnome-terminal -t s0Task1_4 -e "time ./p2mpserver 61004 outTask1_4.txt 0.05"
 #gnome-terminal -t s0Task1_5 -e "time ./p2mpserver 61005 outTask1_5.txt 0.05"
