@@ -82,6 +82,8 @@ int main(int argc, char **argv){
 	//printf("clientSenderThreadTerminate");
 	//pthread_join( clientReceiverThread, NULL);
 	pthread_cancel(clientReceiverThread);
+	pthread_mutex_destroy(&sendNextMutex);
+	pthread_cond_destroy(&sendNextWaitOn1);
 	close(clientSenderThreadArgument->serverInfo->sockID);
 	return 0;
 }
