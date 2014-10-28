@@ -4,7 +4,7 @@ sleep 1
 #Open port numbers 61001-61005,62001-62010,63001-63010 on servers
 #Client will be at Lab, $Server0 is my IP(174.97.168.75), $Server1 is Shruti's IP(), $Server2 is system at Lab().
 
-
+#dd if=/dev/urandom of=random.txt bs=1M count=1
 #gnome-terminal -t Task -e "bash -c \"time ./p2mpclient 127.0.0.1 65423 random.txt 500; echo task; exec bash\""
 
 Server0=174.97.168.75
