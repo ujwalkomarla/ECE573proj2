@@ -30,7 +30,7 @@
 #define PROJ_MAX_SEGMENT_SIZE 1000
 #define ACK_SEG_SIZE 8
 
-#define ESTIMATED_RTT_S 1
+#define ESTIMATED_RTT_S 3
 #define ESTIMATED_RTT_uS 0
 
 #define SEND 3

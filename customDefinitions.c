@@ -106,6 +106,9 @@ unsigned int sendSegment(unsigned int reSendOrSend, ...){
 	//fwrite(tBuf,sizeof(char),segmentSize,stdout);
 	//fflush(stdout);
 	#endif
+	}else{
+	unsigned int tSeqNo = (((tBuf[SEQ_NO_HEADER_POS] << 24) &0xFF000000)|(( tBuf[SEQ_NO_HEADER_POS+1] << 16) & 0x00FF0000) | ((tBuf[SEQ_NO_HEADER_POS+2] << 8) &0x0000FF00)|( tBuf[SEQ_NO_HEADER_POS+3] & 0x000000FF) );
+	printf("Timeout, Sequence number = %d\r\n",tSeqNo);
 	}
 		
 	int i;
