@@ -1,7 +1,9 @@
 *.o
-client
-server
+p2mpclient
+p2mpserver
 gitAuto.sh
 *~
 Trial.c
 trial
+.project
+
