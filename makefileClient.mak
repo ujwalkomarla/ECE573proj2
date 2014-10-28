@@ -3,7 +3,7 @@ CFLAGS=-c -Wall -g
 LDFLAGS= -pthread
 SOURCES=client.c customDefinitions.c ClientSenderThreadFunc.c ClientReceiverThreadFunc.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=client
+EXECUTABLE=p2mpclient
 
 
 all: $(SOURCES) $(EXECUTABLE)

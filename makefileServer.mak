@@ -3,7 +3,7 @@ CFLAGS=-c -Wall -o3 -g
 LDFLAGS=
 SOURCES=server.c customDefinitions.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=server
+EXECUTABLE=p2mpserver
 
 
 all: $(SOURCES) $(EXECUTABLE)
