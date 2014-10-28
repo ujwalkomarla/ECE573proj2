@@ -76,7 +76,9 @@ int main(int argc, char **argv){
 	// What parameters are required to be sent?
     if(0 !=pthread_create( &clientReceiverThread, NULL, ClientReceiverThreadFunc, clientSenderThreadArgument)) DieWithError("Error - pthread_create()");
 	pthread_join( clientSenderThread, NULL);
-	pthread_join( clientReceiverThread, NULL);
+	//printf("clientSenderThreadTerminate");
+	//pthread_join( clientReceiverThread, NULL);
+	pthread_cancel(clientReceiverThread);
 	close(clientSenderThreadArgument->serverInfo->sockID);
 	return 0;
 }
