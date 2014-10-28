@@ -23,34 +23,25 @@ int main(int argc, char **argv){
 	int noOfBytesRead;
 	while(1){
 		if((noOfBytesRead = recvfrom(sockID,buf,sizeof(char)*PROJ_MAX_SEGMENT_SIZE,0,(struct sockaddr *)&senderConn,&sizeSenderConn))<0) DieWithError("Server can't receive packets");
-		//#ifdef DEBUG
-		//	printf("Received a packet\r\n");
-		//	fflush(stdout);
-		//#endif 
+		
 		tSeqNo = (((buf[SEQ_NO_HEADER_POS] << 24) &0xFF000000)|(( buf[SEQ_NO_HEADER_POS+1] << 16) & 0x00FF0000) | ((buf[SEQ_NO_HEADER_POS+2] << 8) &0x0000FF00)|( buf[SEQ_NO_HEADER_POS+3] & 0x000000FF) );
 		float tempVal = rand()/(float)RAND_MAX;
-		#ifdef DEBUG
-			//printf("%f Rand value", tempVal);
-			//printf("No of bytes = %d",noOfBytesRead);
-		#endif
+		
 		if(tempVal>lossProb){
 			checkSumValue  = segmentChecksum(0,0,buf,noOfBytesRead) + 1;
-			#ifdef DEBUG
-				//printf("checkSumValue = %d", checkSumValue);
-				//fwrite(buf,sizeof(char),noOfBytesRead,stdout);
-				//fflush(stdout);
-			#endif
+			
 			if(!checkSumValue){//i.e., Only if checksum + 1 is equal to zero, then accept 
 				if(tSeqNo == seqNo){
 					segType = (((buf[SEGMENTTYPE_HEADER_POS]<<8)&0xFF00)|(buf[SEGMENTTYPE_HEADER_POS+1]&0x00FF));
 					if(0x5555 == segType){
 					fwrite(buf+HEADERSIZE,sizeof(char),noOfBytesRead-HEADERSIZE,fp);
 					fflush(fp);
-					makeSegment(tSeqNo,SEGMENT_TYPE_ACK,replyBuf,0);
-					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
 					seqNo += noOfBytesRead;
+					makeSegment(seqNo,SEGMENT_TYPE_ACK,replyBuf,0);
+					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
+					
 					#ifdef DEBUG
-					printf("Accepted packet with seq no %d \r\n",tSeqNo);
+					//printf("Accepted packet with seq no %d \r\n",tSeqNo);
 					#endif
 					}else{
 						printf("Unknown packet type\r\n");
@@ -59,7 +50,6 @@ int main(int argc, char **argv){
 					printf("Random Packet, Waiting for Sequence Number = %d, Received Sequence Number = %d\r\n",seqNo,tSeqNo);
 					makeSegment(seqNo,SEGMENT_TYPE_ACK,replyBuf,0);//ACK last received packet.
 					sendto(sockID,replyBuf,ACK_SEG_SIZE,0,(struct sockaddr *)&senderConn,sizeSenderConn);
-					
 				}
 			}else{
 				printf("Checksum fail, Sequence Number = %d\r\n",tSeqNo);
@@ -68,9 +58,6 @@ int main(int argc, char **argv){
 			printf("Packet Loss, Sequence Number = %d\r\n", tSeqNo);
 		}
 	}
-	
-	
-	
 	close(sockID);
 	return 0;
 }
