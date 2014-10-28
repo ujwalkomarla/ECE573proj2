@@ -1,6 +1,4 @@
 #include"customDefinitions.h"
-
-
 void *ClientReceiverThreadFunc(void *msg){
 	extern unsigned int SEND_NEXT;
 	struct threadArgument *rcvdArgument = (struct threadArgument *)msg;
@@ -15,7 +13,7 @@ void *ClientReceiverThreadFunc(void *msg){
 	while(1){
 		if((noOfBytesRead = recvfrom(rcvdArgument->serverInfo->sockID,buf,ACK_SEG_SIZE*sizeof(char),0,(struct sockaddr *)&clientRcvrUDP,&clientRcvrUDPlen))<0) DieWithError("Client Receiver can't receive packets");
 		#ifdef DEBUG
-		printf("Received an ACK probably?");
+		//printf("Received an ACK probably?");
 		#endif
 		//unsigned short int checkSumValue  = segmentChecksum(0,0,buf,ACK_SEG_SIZE) + 1;
 		//if(!checkSumValue){//i.e., Only if checksum + 1 is equal to zero, then accept 
@@ -34,14 +32,16 @@ void *ClientReceiverThreadFunc(void *msg){
 						}
 						if(countOfACKs == rcvdArgument->serverInfo->numberOfServers){
 							SEND_NEXT = 1;
+							
+							
 						}
 					}else{
 						printf("Unknown packet type\r\n");
 					}
 				}else{
-					printf("ACK for older packet, Waiting for %d, Received %d",rcvdArgument->fileTransferInfo->seqNo,seqNo);
+					//printf("ACK for older packet, Waiting for %d, Received %d",rcvdArgument->fileTransferInfo->seqNo,seqNo);
 				}
-			}	
+			}			
 		/*}*/
 	}
 return NULL;
