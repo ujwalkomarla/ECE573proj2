@@ -51,24 +51,24 @@ int main(int argc, char **argv){
 			}
 		}
 		else{
-			printf("USAGE: %s FileNameToTransfer MSS #ServerPortNumber ServerIP(s)\r\n",argv[0]);
+			printf("USAGE: %s ServerIP(s) #ServerPortNumber FileNameToTransfer MSS \r\n",argv[0]);
 			return -1;
 		}
 	}else{
 				
-		strcpy(clientSenderThreadArgument->fileTransferInfo->fileNameToTransfer,argv[1]);
-		clientSenderThreadArgument->fileTransferInfo->segmentSize = atoi(argv[2]);
+		strcpy(clientSenderThreadArgument->fileTransferInfo->fileNameToTransfer,argv[argc-2]);
+		clientSenderThreadArgument->fileTransferInfo->segmentSize = atoi(argv[argc-1]);
 		clientSenderThreadArgument->serverInfo->numberOfServers = argc-4;
 		clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo = \
 				malloc(sizeof(struct sockaddr_in *) * clientSenderThreadArgument->serverInfo->numberOfServers);
 		clientSenderThreadArgument->serverInfo->serverACK = \
 				malloc(sizeof(unsigned int) * clientSenderThreadArgument->serverInfo->numberOfServers);		
 				
-		for(i=4;i<argc;i++){
-			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4] = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
-			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_family = AF_INET;
-			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_port = htons(atoi(argv[3]));
-			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-4]->sin_addr.s_addr = inet_addr(argv[i]);
+		for(i=1;i<argc-3;i++){
+			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-1] = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
+			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-1]->sin_family = AF_INET;
+			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-1]->sin_port = htons(atoi(argv[argc-3]));
+			clientSenderThreadArgument->serverInfo->ClientServerSockAddrInfo[i-1]->sin_addr.s_addr = inet_addr(argv[i]);
 		
 		}
 	}
