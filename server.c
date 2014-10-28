@@ -21,6 +21,7 @@ int main(int argc, char **argv){
 	unsigned int seqNo = 0;
 	unsigned int tSeqNo;
 	int noOfBytesRead;
+	srand(time(NULL));
 	while(1){
 		if((noOfBytesRead = recvfrom(sockID,buf,sizeof(char)*PROJ_MAX_SEGMENT_SIZE,0,(struct sockaddr *)&senderConn,&sizeSenderConn))<0) DieWithError("Server can't receive packets");
 		
