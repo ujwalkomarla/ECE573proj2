@@ -4,6 +4,8 @@
 
 void* ClientSenderThreadFunc(void *msg){	
 	extern unsigned int SEND_NEXT;
+	extern pthread_mutex_t sendNextMutex;
+	extern pthread_cond_t sendNextWaitOn1;
 	unsigned int i;
 	struct threadArgument *rcvdArgument = (struct threadArgument *)msg;
 	unsigned int segmentSize = rcvdArgument->fileTransferInfo->segmentSize;
@@ -16,7 +18,10 @@ void* ClientSenderThreadFunc(void *msg){
 	int fileReadSize;
 	unsigned int DONE=0;
 	while(DONE==0){// !DONE
-		while(!SEND_NEXT);
+		pthread_mutex_lock(&sendNextMutex);
+		while(!SEND_NEXT){
+		pthread_cond_wait(&sendNextWaitOn1,&sendNextMutex);
+		}
 		fileReadSize = fread((buf + HEADERSIZE), sizeof(char), MaxNoOfDataBytesInSegment, fileToTransfer);
 		if(feof(fileToTransfer)){
 		
@@ -43,6 +48,7 @@ void* ClientSenderThreadFunc(void *msg){
 			//fflush(stdout);
 		#endif
 		SEND_NEXT = 0;
+		pthread_mutex_unlock(&sendNextMutex);
 		sendSegment(SEND, rcvdArgument->serverInfo,buf,(fileReadSize+HEADERSIZE));
 		
 	}

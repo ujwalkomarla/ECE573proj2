@@ -1,6 +1,8 @@
 #include"customDefinitions.h"
 void *ClientReceiverThreadFunc(void *msg){
 	extern unsigned int SEND_NEXT;
+	extern pthread_mutex_t sendNextMutex;
+	extern pthread_cond_t sendNextWaitOn1;
 	struct threadArgument *rcvdArgument = (struct threadArgument *)msg;
 	char *buf = (char *) malloc(ACK_SEG_SIZE*sizeof(char));
 	struct sockaddr_in clientRcvrUDP;
@@ -31,9 +33,11 @@ void *ClientReceiverThreadFunc(void *msg){
 								countOfACKs++;	
 						}
 						if(countOfACKs == rcvdArgument->serverInfo->numberOfServers){
+							
+							pthread_mutex_lock(&sendNextMutex);
 							SEND_NEXT = 1;
-							
-							
+							pthread_cond_signal(&sendNextWaitOn1);
+							pthread_mutex_unlock(&sendNextMutex);
 						}
 					}else{
 						printf("Unknown packet type\r\n");

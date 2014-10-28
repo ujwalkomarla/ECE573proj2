@@ -1,8 +1,11 @@
 #include"customDefinitions.h"
 unsigned int SEND_NEXT = 1;
+pthread_mutex_t sendNextMutex;
+pthread_cond_t sendNextWaitOn1;
 int main(int argc, char **argv){
 	struct threadArgument *clientSenderThreadArgument = malloc(sizeof(struct threadArgument));
-	
+	pthread_mutex_init(&sendNextMutex,NULL);
+	pthread_cond_init(&sendNextWaitOn1,NULL);
 	
 	//Variable to struct member
 	//char *fileNameToTransfer = (char *)malloc(sizeof(char)* (NAME_MAX+1));
